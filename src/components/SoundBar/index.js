@@ -4,14 +4,15 @@ import {
   FaPlay, 
   FaHeart, 
   FaRegHeart, 
-  FaShareAlt, 
   FaRandom, 
   FaListUl,
   FaBackward,
   FaForward
 } from 'react-icons/fa';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
+// eslint-disable-next-line no-unused-vars
 import { MdOutlineRepeatOne, MdOutlineRepeat } from 'react-icons/md';
+// eslint-disable-next-line no-unused-vars
 import { ImVolumeHigh, ImVolumeMedium, ImVolumeLow, ImVolumeMute, ImVolumeMute2 } from 'react-icons/im';
 
 import { Container } from './styles';
@@ -61,7 +62,6 @@ function Music() {
                 type="range"
                 min="0" 
                 max="100" 
-                tabindex="0"
               />
             </div>
           </div>
@@ -71,7 +71,6 @@ function Music() {
           type="range"
           min="0" 
           max="100" 
-          tabindex="0"
         />
       </Container>
     </>

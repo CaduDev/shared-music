@@ -2,13 +2,12 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
-  height: 100%;
+  height: 80px;
+  background: #f4f9fc;
 
   > .content {
     width: 100%;
-    height: 80px;
-    background: #f4f9fc;
-    /* border-bottom: 6px #dee2e5 solid; */
+    height: 76px;
     display: flex;
     justify-content: space-around;
     padding: 0px 12px;
@@ -127,6 +126,7 @@ export const Container = styled.div`
 
   > .mdl-slider__container {
     height: 0px;
+    z-index: 9;
     /* margin: 0px; */
     /* padding: 0px; */
 
@@ -146,6 +146,4 @@ export const Container = styled.div`
       margin-top: 2.2222px;
     }
   }
-
-
 `;

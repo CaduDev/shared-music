@@ -9,7 +9,6 @@ import { Container } from './styles';
 import { logo, avatar1 } from '../../assets/'
 
 function Header({ match: { path } }) {
-  console.log(path)
   return (
     <Container>
       <div className="nav">

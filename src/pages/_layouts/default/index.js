@@ -8,7 +8,9 @@ import { Wrapper, Scroll } from './styles';
 
 import Header from '../../../components/Header';
 import SoundBar from '../../../components/SoundBar';
+import NavBar from '../../../components/NavBar';
 
+import { bg } from '../../../assets'
 export default function DefaultLayout({ children, match }) {
   const { show } = useSelector(state => state.feedBack);
   const [key, setKey] = useState(0)
@@ -19,16 +21,20 @@ export default function DefaultLayout({ children, match }) {
   }, [show])
 
   return (
-    <Scroll 
-      options={{ suppressScrollY: show }}
-      key={key}
-    >
+    <>
       <Header match={match} />
-      <Wrapper>
-        <SoundBar />
-        {children}
-      </Wrapper>
-    </Scroll>
+      <SoundBar />
+      <Scroll 
+        options={{ suppressScrollY: show }}
+        key={key}
+        bg={bg}
+      >
+        <NavBar />
+        <Wrapper>
+          {children}
+        </Wrapper>
+      </Scroll>
+    </>
   );
 }
 
