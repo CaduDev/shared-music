@@ -197,6 +197,19 @@ export const Container = styled.div`
               background-color: transparent;
             }
           }
+
+          > .liked {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            border: 3px solid #877eb8;
+          }
         }
       }
     }
@@ -343,6 +356,55 @@ export const List = styled.div`
   background: #00000012;
   padding: 8px;
   border-radius: 8px;
+  cursor: pointer;
+  padding-left: 0px;
+
+  > .active {
+    > span:nth-child(1) {
+      display: flex !important;
+    }
+
+    > span:nth-child(2) {
+      display: none !important;
+    } 
+  }
+
+  > .status-play {
+    width: 43px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #5c5c5c;
+
+    > span {
+      width: 43px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    > span:nth-child(2) {
+      display: flex;
+    }
+
+    > span:nth-child(1) {
+      display: none;
+    }
+
+    &:hover {
+      > span:nth-child(1) {
+        display: flex;
+      }
+
+      > span:nth-child(2) {
+        display: none;
+      } 
+    }
+  }
 
   > .cover-album {
     background-image: url(${({ bg }) => bg});

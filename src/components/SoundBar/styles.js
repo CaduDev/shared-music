@@ -144,6 +144,76 @@ export const Container = styled.div`
       background: #8379b9 !important;
       border: none;
       margin-top: 2.2222px;
+      position: relative;
+
+      &::after {
+        content: "";
+        width: 40px;
+        height: 40px;
+        background-image: red;
+        border-radius: 50%;
+        top: 0;
+        left: 0;
+      }
+    }
+  }
+
+  > .progress-bar {
+    cursor: pointer;
+    width: 100%;
+    height: 10%;
+    background-color: #cdcdcd;
+    position: relative;
+    margin-top: 0px;
+    height: 4px;
+    transition: 0.2s;
+
+    > .audio-loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background: #fff;
+    }
+
+    > .audio-progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background: rgb(179,170,226);
+        background: linear-gradient(83deg, rgba(179,170,226,1) 53%, rgba(112,102,162,1) 100%);
+
+        &::after {
+          content: '';
+          width: 16px;
+          height: 16px;
+          position: absolute;
+          right: -8px;
+          top: -6px;
+          border-radius: 50%;
+          background: #8379b9;
+          opacity: 1;
+          transition: 0.2s;
+          z-index: 1;
+        }
+
+        &::before {
+          content: '';
+          width: 50px;
+          height: 50px;
+          position: absolute;
+          right: -25px;
+          top: -21px;
+          border-radius: 50%;
+          background: transparent;
+          -webkit-transition: 2s;
+          transition: 2s;
+          z-index: 2;
+          display: block;
+        }
     }
   }
 `;

@@ -7,10 +7,38 @@ export const Container = styled.header`
   background: #fff;
   width: 100%;
   height: 60px;
+  position: relative;
 
   > * {
     width: calc(100% / 3);
     padding: 0px 12px;
+  }
+
+  .search {
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    padding: 12px;
+    box-shadow: 0px 0px 1px -1px rgba(0, 0, 0, 0.2),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    display: flex;
+
+    > button {
+      height: 100%;
+      width: 40px;
+      background: transparent;
+      border: none;
+    }
+
+    > input {
+      width: 100%;
+      height: 100%;
+      padding: 12px;
+      border-radius: 22px;
+      border: 1px solid;
+    }
   }
 
   > .nav {
@@ -22,6 +50,18 @@ export const Container = styled.header`
       font-size: 14px;
       color: #333;
       font-weight: 600;
+      flex-grow: 1;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    > a {
+      &:hover {
+        background: #887fb90d;
+        transition: .4s;
+      }
     }
   }
 
