@@ -78,6 +78,11 @@ export const Container = styled.div`
 
       > .item {
         width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        background: transparent;
       }
 
       > .item:first-child {

@@ -10,6 +10,7 @@ export { default as logo } from './midia/images/logo/logo-com-marca.png'
 export { default as avatar1 } from './midia/images/avatars/1.jpg'
 export { default as avatar2 } from './midia/images/avatars/2.jpg'
 export { default as edSheeran } from './midia/images/albuns/edSheeran.jpg'
+export { default as imagineDragon } from './midia/images/albuns/imagineDragon.jpg'
 
 export { default as post1 } from './midia/images/post/1.jpg'
 export { default as post2 } from './midia/images/post/2.jpg'
@@ -20,3 +21,4 @@ export { default as post5 } from './midia/images/post/5.jpg'
 export { default as bg } from './midia/images/background/1.jpg'
 
 export { default as nancyMulligan } from './midia/music/Nancy Mulligan.mp3'
+export { default as nextToMeAudio } from './midia/music/Next To Me Audio.mp3'

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
+
 import { BsPlayCircle, BsPauseCircle ,BsGridFill } from 'react-icons/bs';
 
 import { FaThList, FaRegHeart } from 'react-icons/fa';
@@ -8,12 +10,17 @@ import { Container, Card, List } from './styles';
 
 import { posts } from '../../assets/';
 
-function Home() {
-  const [layout, setLayout] = useState('grid');
-  const [musicPlay, seMusicPlay] = useState(0);
+import  { change_music } from '../../store/modules/playing/actions'
 
-  function playMusic(res) {
-    seMusicPlay(musicPlay===res?null: res)
+function Home() {
+  const dispatch = useDispatch();
+  const { playlist } = useSelector(state => state.playing);
+  const [layout, setLayout] = useState('list');
+  const [musicPlay, seMusicPlay] = useState(null);
+
+  function playMusic(res, index) {
+    dispatch(change_music(res));
+    seMusicPlay(musicPlay===index?null: index)
   }
 
   return (
@@ -65,12 +72,12 @@ function Home() {
       ):(
         <div className={`itens-to-list`}>
           {
-            posts.map((res, index) => {
+            playlist.map((res, index) => {
               return (
-                <List ket={index} bg={res} onDoubleClick={() => playMusic(index)}>
+                <List ket={index} bg={res.album_cover} onDoubleClick={() => playMusic(res,index)}>
                   <div 
                     className={index === musicPlay?'status-play active': 'status-play'}
-                    onClick={() => playMusic(index)}
+                    onClick={() => playMusic(res, index)}
                   >
                     <span>
                       {index === musicPlay? (
@@ -85,8 +92,8 @@ function Home() {
                   </div>
                   <div className="cover-album"></div>
                   <div className="info">
-                    <span className="name-music">Name of music</span>
-                    <span className="name-album">Name of album</span>
+                    <span className="name-music">{res.title_music}</span>
+                    <span className="name-album">{res.title_album}</span>
                   </div>
                   <div className="data">
                     4 de nov. de 2020
