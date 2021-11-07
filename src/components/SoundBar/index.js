@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { 
   FaPlay,
   FaPause, 
+  // eslint-disable-next-line no-unused-vars
   FaHeart, 
   FaRegHeart, 
   FaRandom, 
@@ -21,168 +22,241 @@ import { ImVolumeHigh, ImVolumeMedium, ImVolumeLow, ImVolumeMute, ImVolumeMute2 
 
 import { Container } from './styles';
 
-import { edSheeran, nancyMulligan } from '../../assets'
-
 import { 
-  play, 
-  pause,
-  volumeHight,
-  volumeLow,
-  volumeMedium,
-  volumeMute 
-} from '../../assets/icons'
-const width = window.innerWidth;
+  changeVolume,
+  setMuteValue,
+  setAudioProgressWidth,
+  setCurrentTime,
+  setPlayed,
+  setFirstPlay,
+  setChangeRepeat
+} from '../../store/modules/controlsSoudBar/actions';
+
+import  { change_music } from '../../store/modules/playing/actions';
 
 function Music() {
-  const { currentMusic } = useSelector(state => state.playing);
+  const dispatch = useDispatch();
+  const musicPlayer = useRef();
+  const { playlist, currentMusic } = useSelector(state => state.playing);
+  const { vol, mute, audioProgressWidth, currentTime, played, firstPlay, repeat } = useSelector(state => state.controlsSoudBar);
+
+  const [draggable, setDraggable] = useState(false);
+  const [updateInterval, setUpdateInterval] = useState(null);
+  const [initSytem, setInitSystem] = useState(false)
+  const [volIcon, setVolIcon] = useState()
 
   useEffect(() => {
+    dispatch(setPlayed(false))
+    setUpdateInterval(clearInterval(updateInterval)); 
 
-    const audioProgress = document.getElementById('audio-progress')
+    if(initSytem) {
+      dispatch(setCurrentTime({
+        currentOriginal: 0,
+        currentConverted: '00:00 00:00'
+      }))
+      dispatch(setAudioProgressWidth('0%'))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentMusic]);
+
+  useEffect(() => {
+    let icon = ''
+    const volToNumer = parseFloat(vol); 
+
+    if(mute) {
+      icon = <ImVolumeMute2 color="#999999" size={18} />
+    } else {
+      if(volToNumer > 0.74) {
+        icon = <ImVolumeHigh color="#999999" size={18} />
+      } else if (volToNumer > 0.24 && volToNumer < 0.75) {
+        icon = <ImVolumeMedium color="#999999" size={18} />
+      } else if (volToNumer > 0.01 && volToNumer < 0.25) {
+        icon = <ImVolumeLow color="#999999" size={18} />
+      } else if (volToNumer === 0) {
+        icon = <ImVolumeMute2 color="#999999" size={18} /> 
+      }
+    }
+
+    setVolIcon(icon)
+  }, [vol, mute]);
+
+  useEffect(() => {
+    if(initSytem) {
+      if(played) {
+        musicPlayer.current.play();
+      } else {
+        musicPlayer.current.pause();
+        setUpdateInterval(clearInterval(updateInterval));
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [played]);
+
+  useEffect(() => {
+    if(firstPlay === false) {
+      startMusic(true);
+      dispatch(setFirstPlay(true))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstPlay]);
+   
+  function dragMove(e) {  
     const progressBar = document.getElementById('progressBar')
-    const audioLoader = document.getElementById('audio-loader');
-    const music = document.getElementById('music');
-    const btnPlay = document.getElementById('play');
-    const timer = document.getElementById('current-time');
+    
+    if (e.clientX <= progressBar.clientWidth) {
+      setUpdateInterval(clearInterval(updateInterval))
+      dispatch(setAudioProgressWidth(String(e.clientX)+'px'));
+    }
+  }
+  
+  function loadMusic() {
+    musicPlayer.current.volume = vol;
+    musicPlayer.current.muted = mute;
+    musicPlayer.current.currentTime = currentTime.currentOriginal;
 
-    function init() {
-      const iconPlay = '<svg style="color: #222;" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="18" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg>'
-      const iconPause = '<svg style="color: #222;" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="18" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M144 479H48c-26.5 0-48-21.5-48-48V79c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zm304-48V79c0-26.5-21.5-48-48-48h-96c-26.5 0-48 21.5-48 48v352c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48z"></path></svg>'
-  
-      let intervalTime,
-        hour, 
-        min, 
-        seg, 
-        currentHour, 
-        currentMin, 
-        currentSeg, 
-        bufferEnd,
-        pctSeek,
-        pctBar;
+    if(initSytem) {
+      musicPlayer.current.play();
+      dispatch(setPlayed(true))
+      setUpdateInterval(setInterval(updateTime, 200))
+    } else {
+      setInitSystem(true);
+    }
+  }
 
-      
-      function dragMove(e) {    
-        if (e.offsetX <= progressBar.clientWidth) {
-          return audioProgress.style.width = String(e.offsetX)+'px';
-        }
-      }
-  
-      function dragEnd() {
-        progressBar.removeEventListener('mousemove', dragMove);
-        progressBar.removeEventListener('mouseup', dragEnd);
-  
-        // music.play();
-  
-        btnPlay.innerHTML = iconPause;
-  
-        intervalTime = setInterval(updateTime, 100);
-      }
-  
-      function dragStart(e) {
-        // music.pause();
-        clearInterval(intervalTime);
-        progressBar.addEventListener('mousemove', dragMove);
-        progressBar.addEventListener('mouseup', dragEnd);
-      }
+  function updateTime() {
+    const music = musicPlayer.current;
 
-      function updateTime(init) {
-        if(!init) {
-          bufferEnd = music.buffered.end(music.buffered.length - 1)
+    let pctSeek = (music.currentTime / music.duration) * 100;
+
+    dispatch(setAudioProgressWidth(String(pctSeek) + '%'));
+
+    let hour = Math.floor(music.duration / 3600);
+    let min = Math.floor(music.duration / 60)
+    let seg = Math.floor(((music.duration / 60) % 1) * 60)
     
-          audioLoader.style.width = String((bufferEnd / music.duration) * 100)+ '%';
-    
-          pctSeek = (music.currentTime / music.duration) * 100;
-    
-          audioProgress.style.width = String(pctSeek) + '%'
-        }
-        
   
-        hour = Math.floor(music.duration / 3600);
-        min = Math.floor(music.duration / 60)
-        seg = Math.floor(((music.duration / 60) % 1) * 60)
+    let currentHour = Math.floor(music.currentTime / 3600);
+    let currentMin = Math.floor(music.currentTime / 60);
+    let currentSeg = Math.floor(((music.currentTime / 60) % 1) * 60);
   
-        currentHour = Math.floor(music.currentTime / 3600);
-        currentMin = Math.floor(music.currentTime / 60);
-        currentSeg = Math.floor(((music.currentTime / 60) % 1) * 60);
+    dispatch(setCurrentTime({
+      currentOriginal: music.currentTime,
+      currentConverted:convertTime(currentHour, currentMin, currentSeg) +
+        ' | ' + convertTime(hour, min, seg)
+    }));
+  }
+
+  function convertTime(horas, minutos, segundos) {
+    if(horas < 10 && horas > 0) {
+      horas = '0' + String(horas) + ":";
+    } else {
+      horas = '';
+    }
   
-        if(currentSeg > 0 && currentSeg < 2) {
-          progressBar.style.overflow = 'initial !important'
-        }
+    if(minutos < 10) {
+      minutos = '0' + String(minutos);
+    } else if(minutos > 59){
+      minutos = minutos - (Math.floor(minutos/60) *60);
+    }
   
-        timer.innerHTML = convertTime(currentHour, currentMin, currentSeg) +
-        ' | ' + convertTime(hour, min, seg);
-      }
+    if(segundos < 10) {
+      segundos = '0' + String(segundos);
+    }
   
-      function convertTime(horas, minutos, segundos) {
-        if(horas < 10 && horas > 0) {
-          horas = '0' + String(horas) + ":";
-        } else {
-          horas = '';
-        }
-  
-        if(minutos < 10) {
-          minutos = '0' + String(minutos);
-        } else if(minutos > 59){
-          minutos = minutos - (Math.floor(minutos/60) *60);
-        }
-  
-        if(segundos < 10) {
-          segundos = '0' + String(segundos);
-        }
-  
-        return String(horas) + String(minutos) + ':' + String(segundos)
-      }
-  
-      function seeker(event) {
-        pctBar = (event.offsetX / progressBar.clientWidth) * 100;
-        music.currentTime = (music.duration * pctBar) / 100;
-  
-        currentHour = Math.floor(((music.duration * pctBar) / 100) / 3600);
-        currentMin = Math.floor(((music.duration * pctBar) / 100) / 60);
-        currentSeg = Math.floor(((((music.duration * pctBar) / 100) / 60) % 1) * 60);
-  
-        pctSeek = (music.currentTime / music.duration) * 100;
-    
-        audioProgress.style.width = String(pctSeek) + '%'
-  
-        timer.innerHTML = convertTime(currentHour, currentMin, currentSeg) +
-          ' | ' + convertTime(hour, min, seg);
-      }
- 
-      function play(e) {
-        btnPlay.innerHTML = '';
-        
-        if(music.paused) {
-          music.play();
-  
-          btnPlay.innerHTML = iconPause;
-  
-          intervalTime = setInterval(updateTime, 100);
-        } else {
-          music.pause();
-  
-          btnPlay.innerHTML = iconPlay;
-  
-          clearInterval(intervalTime);
-        }
-      }
-  
-      music.addEventListener('loadeddata', () => {
-        audioProgress.addEventListener('mousedown', dragStart);
-        progressBar.addEventListener('click', seeker)
-        btnPlay.addEventListener('mousedown', play);
-      })
+    return String(horas) + String(minutos) + ':' + String(segundos)
+  }
+
+  function startMusic(status) { 
+    const music = musicPlayer.current
+
+    if(status) {
+      music.play();
+      dispatch(setPlayed(true))  
+      setUpdateInterval(setInterval(updateTime, 100));
+      return true;
     }
 
-
-
-    if(currentMusic) {
-      init()
+    if(music.paused) {
+      music.play();
+      dispatch(setPlayed(true))  
+      setUpdateInterval(setInterval(updateTime, 100));
+    } else {
+      music.pause();
+      dispatch(setPlayed(false));
+      setUpdateInterval(clearInterval(updateInterval))
     }
+  }
+
+  function seeker(event) {
+    const progressBar = document.getElementById('progressBar');
+    const music = musicPlayer.current;
+
+    let pctBar = (event.clientX / progressBar.clientWidth) * 100;
+    music.currentTime = (music.duration * pctBar) / 100;
+
+    let hour = Math.floor(music.duration / 3600);
+    let min = Math.floor(music.duration / 60)
+    let seg = Math.floor(((music.duration / 60) % 1) * 60)
+  
+    let currentHour = Math.floor(((music.duration * pctBar) / 100) / 3600);
+    let currentMin = Math.floor(((music.duration * pctBar) / 100) / 60);
+    let currentSeg = Math.floor(((((music.duration * pctBar) / 100) / 60) % 1) * 60);
+  
+    let pctSeek = (music.currentTime / music.duration) * 100;
+  
+    dispatch(setAudioProgressWidth(String(pctSeek) + '%'));
+  
+    dispatch(setCurrentTime({
+      currentOriginal: music.currentTime,
+      currentConverted:convertTime(currentHour, currentMin, currentSeg) +
+        ' | ' + convertTime(hour, min, seg)
+    }));
+  }
+
+  function changeMudeState() {
+    const music = musicPlayer.current;
     
-  }, [currentMusic])
+    music.muted  = !mute;
+    dispatch(setMuteValue(!mute));
+  }
 
+  function nextTrack() {
+    if(currentMusic && playlist[currentMusic.index+1]) {
+      dispatch(change_music({ 
+        ...playlist[currentMusic.index+1],
+        index: currentMusic.index+1
+      }));
+    }
+  }
 
+  function previousTrack() {
+    if(currentMusic && playlist[currentMusic.index-1]) {
+      dispatch(change_music({ 
+        ...playlist[currentMusic.index-1],
+        index: currentMusic.index-1
+      }));
+    }    
+  }
+
+  function iconRepeat() {
+    let icon = <MdOutlineRepeat size={16} color="#999" />
+
+    switch(repeat) {
+      case 'none':
+        icon = <MdOutlineRepeat size={16} color="#999" />
+      break;
+      case 'single':
+        icon = <MdOutlineRepeatOne size={16} color="#a68ee9" />
+      break;
+      case 'playlist':
+        icon = <MdOutlineRepeat size={16} color="#a68ee9" />
+      break;
+      default:
+        icon = <MdOutlineRepeat size={16} color="#999" />
+    }
+
+    return icon
+  }
   
   return (
     <>
@@ -191,11 +265,11 @@ function Music() {
           <div className="meta-music">
             <div className="meta-music-content">
               <div className="cover">
-                <img src={currentMusic.album_cover} alt="cover álbum" />
+                <img src={currentMusic?currentMusic.album_cover:''} alt="cover álbum" />
               </div>
               <div className="info">
-                <span className="music-name">{currentMusic.title_music}</span>
-                <span className="album-name">{currentMusic.title_album}</span>
+                <span className="music-name">{currentMusic? currentMusic.title_music:''}</span>
+                <span className="album-name">{currentMusic?currentMusic.title_album:''}</span>
               </div>
             </div>
             <div className="actions">
@@ -208,21 +282,33 @@ function Music() {
             </div>
           </div>
           <div className="actions-player">
-            <div className="item"><FaRandom size={16} color="#999" /></div>
-            <div className="item"><FaBackward size={16} color="#222" /></div>
-            <button className="item" id="play">
-              <FaPlay size={18} color="#222" />
+            <button className="item">
+              <FaRandom size={16} color="#999" />
             </button>
-            <div className="item"><FaForward size={16} color="#222" /></div>
-            <div className="item"><MdOutlineRepeat size={16} color="#999" /></div>
+            <button className="item" onClick={() => previousTrack()} disabled={!(currentMusic && playlist[currentMusic.index-1])}>
+              <FaBackward size={16} color="#222" /></button>
+            <button className="item" onClick={() => startMusic()}>
+              {played? <FaPause size={18} color="#222" />: <FaPlay size={18} color="#222" />}
+            </button>
+            <button className="item" onClick={() => nextTrack()} disabled={!(currentMusic && playlist[currentMusic.index+1])}>
+              <FaForward size={16} color="#222" />
+            </button>
+            <button className="item repeat" onClick={() => {
+              dispatch(setChangeRepeat(
+                repeat==='none'?'playlist':repeat==='playlist'?'single':'none'
+              ))
+            }}>
+              {iconRepeat()}                          
+              {repeat !== 'none' && <span />}
+            </button>
           </div>
           <div className="action-music">
-            {currentMusic && <div className="item currentTime" id="current-time">00:00 00:00</div>}
+            <div className="item currentTime">{currentTime.currentConverted}</div>
             <div className="item"><FaListUl size={16} color="#999" /></div>
             <div className="item volume-input">
-              <div className="item volume-icon" id="volume-icon">
-                <ImVolumeHigh size={16} color="#999" />
-              </div>
+              <button className="item volume-icon" onClick={() => changeMudeState()}>
+                {volIcon}
+              </button>
               <input 
                 className="mdl-slider mdl-js-slider" 
                 id="slider-vol"
@@ -230,15 +316,71 @@ function Music() {
                 step="0.01"
                 min="0" 
                 max="1" 
+                value={vol}
+                onChange={(e) => {                  
+                  dispatch(changeVolume(e.target.value));
+                  
+                  if(mute) {
+                    dispatch(setMuteValue(false))
+                  }
+
+                  musicPlayer.current.muted  = false;
+                  musicPlayer.current.volume =e.target.value; 
+                }}
               />
             </div>
           </div>
         </div>
-        <div id="progressBar" class="progress-bar float-left">
-          <div id="audio-loader" class="audio-loader"></div>
-          <div id="audio-progress" class="audio-progress"></div>
+        <div 
+          id="progressBar" 
+          className="progress-bar float-left"
+          onMouseMove={(e) => draggable?dragMove(e):{}}
+          onClick={e => seeker(e)}
+        >
+          <div className="audio-loader"></div>
+          <div  
+            className="audio-progress" 
+            style={{ width: audioProgressWidth }}
+            onMouseDown={(e) => setDraggable(true)}
+            onMouseUp={() =>  {
+              setUpdateInterval(setInterval(updateTime, 100));
+              setDraggable(false)
+            }}
+          />
         </div>
-        <audio id="music" src={currentMusic?currentMusic.music:''} style={{ display: 'none' }} />
+        <audio 
+          ref={musicPlayer}
+          onEnded={() => {
+            if(repeat==='single') {
+              musicPlayer.current.play();
+            } else if(repeat ==='playlist') {
+              if(currentMusic && (currentMusic.index === playlist.length-1)) {
+                dispatch(change_music({ 
+                  ...playlist[0],
+                  index: 0
+                }));
+              }else {
+                dispatch(change_music({ 
+                  ...playlist[currentMusic.index+1],
+                  index: currentMusic.index+1
+                }));
+              } 
+            } else {
+              if(currentMusic && playlist[currentMusic.index+1]) {
+                dispatch(change_music({ 
+                  ...playlist[currentMusic.index+1],
+                  index: currentMusic.index+1
+                }));
+              } else {
+                dispatch(setPlayed(false))
+                setUpdateInterval(clearInterval(updateInterval)); 
+              }
+            }
+          }}
+          src={currentMusic?currentMusic.music:''} 
+          style={{ display: 'none' }} 
+          onLoadedData={() => loadMusic()}
+        />
       </Container>
     </>
   );

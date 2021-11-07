@@ -13,7 +13,7 @@ import NavBar from '../../../components/NavBar';
 import { bg } from '../../../assets'
 export default function DefaultLayout({ children, match }) {
   const { show } = useSelector(state => state.feedBack);
-  const [key, setKey] = useState(0)
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
     setKey(key === 0 ? 1: 0)

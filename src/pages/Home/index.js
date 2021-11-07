@@ -10,16 +10,32 @@ import { Container, Card, List } from './styles';
 
 import { posts } from '../../assets/';
 
-import  { change_music } from '../../store/modules/playing/actions'
+import  { change_music } from '../../store/modules/playing/actions';
+
+import  { setPlayed, setFirstPlay } from '../../store/modules/controlsSoudBar/actions';
 
 function Home() {
   const dispatch = useDispatch();
-  const { playlist } = useSelector(state => state.playing);
+  const { playlist, currentMusic } = useSelector(state => state.playing);
   const [layout, setLayout] = useState('list');
   const [musicPlay, seMusicPlay] = useState(null);
+  const { played, firstPlay } = useSelector(state => state.controlsSoudBar);
 
   function playMusic(res, index) {
-    dispatch(change_music(res));
+    if(currentMusic && currentMusic.id && res.id === currentMusic.id) {
+      dispatch(setPlayed(!played))
+    } else {
+      dispatch(change_music({...res, index}));
+      
+      console.log({
+        firstPlay
+      });
+
+      if(firstPlay === null) {
+        dispatch(setFirstPlay(false));
+      }
+    }
+
     seMusicPlay(musicPlay===index?null: index)
   }
 
@@ -74,15 +90,19 @@ function Home() {
           {
             playlist.map((res, index) => {
               return (
-                <List ket={index} bg={res.album_cover} onDoubleClick={() => playMusic(res,index)}>
+                <List key={index} bg={res.album_cover} onDoubleClick={() => playMusic(res,index)}>
                   <div 
-                    className={index === musicPlay?'status-play active': 'status-play'}
+                    className={currentMusic && res.id === currentMusic.id?'status-play active': 'status-play'}
                     onClick={() => playMusic(res, index)}
                   >
                     <span>
-                      {index === musicPlay? (
-                        <BsPauseCircle size={24} color="#888"/>
-                      ): (
+                      {currentMusic && res.id === currentMusic.id? 
+                        played?(
+                          <BsPauseCircle size={24} color="#888"/>
+                        ):(
+                          <BsPlayCircle size={24} color="#888"/>
+                        )
+                      :(
                         <BsPlayCircle size={24} color="#888"/>
                       )}
                     </span>
@@ -103,7 +123,7 @@ function Home() {
                   </div>
                   <div className="time">4:32</div>
                   <div className="animtaion">
-                    {index === musicPlay && (
+                    {played && index === musicPlay && (
                       <svg className="equilizer equilizer-animation" viewBox="0 0 60 60">
                         <g>
                           <title>Audio Equilizer</title>

@@ -8,7 +8,7 @@ export default reducers => {
     {
       key: 'Shared-Music',
       storage,
-      whitelist: ['auth', 'playing'],
+      whitelist: ['auth', 'playing', 'controlsSoudBar'],
     },
     reducers
   );

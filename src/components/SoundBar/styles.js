@@ -83,6 +83,24 @@ export const Container = styled.div`
         align-items: center;
         border: none;
         background: transparent;
+
+        &:disabled {
+          opacity: 0.5;
+        }
+      }
+
+      > .repeat {
+        position: relative;
+        
+        > span {
+          background: #a68ee9;
+          display: block;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          position: absolute;
+          bottom: -4px;
+        }
       }
 
       > .item:first-child {
@@ -123,7 +141,12 @@ export const Container = styled.div`
         }
 
         > .volume-icon {
-          width: 18px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border: none;
+          background: transparent;
+          padding: 0px 10px;
         }
       }
     }
