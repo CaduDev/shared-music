@@ -57,7 +57,7 @@ function Music() {
       dispatch(setAudioProgressWidth('0%'))
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentMusic.music]);
+  }, [currentMusic && currentMusic.music]);
 
   useEffect(() => {
     let icon = ''
