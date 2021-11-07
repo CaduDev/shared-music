@@ -46,6 +46,14 @@ export default function last_played(state = INITIAL_STATE, action) {
         draft.currentMusic = action.payload.current_music;              
         break;
       }
+      case '@music/CHAGEND_PLAYLIST': {
+        draft.playlist = action.payload.data;              
+        break;
+      }
+      case '@music/CHAGEND_INDEX_CURRENT_MUSIC': {
+        draft.currentMusic.index = action.payload.data;              
+        break;
+      }
       default:
     }
   });

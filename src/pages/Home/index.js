@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,13 +6,23 @@ import { BsPlayCircle, BsPauseCircle ,BsGridFill } from 'react-icons/bs';
 
 import { FaThList, FaRegHeart } from 'react-icons/fa';
 
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 import { Container, Card, List } from './styles';
 
 import { posts } from '../../assets/';
 
-import  { change_music } from '../../store/modules/playing/actions';
+import  { change_music, changeFeedBack, changeIndexCurrentMusic } from '../../store/modules/playing/actions';
 
 import  { setPlayed, setFirstPlay } from '../../store/modules/controlsSoudBar/actions';
+
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
 
 function Home() {
   const dispatch = useDispatch();
@@ -37,6 +47,33 @@ function Home() {
     }
 
     seMusicPlay(musicPlay===index?null: index)
+  }
+
+  function onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      playlist,
+      result.source.index,
+      result.destination.index
+    );
+
+    let index = null;
+
+    if(currentMusic && currentMusic.id) {
+      for(let i=0; i < items.length;i++) {
+        if(items[i].id === currentMusic.id) {
+          index = i
+        }
+      }
+    }
+
+    dispatch(changeIndexCurrentMusic(index))
+
+    dispatch(changeFeedBack(items))
   }
 
   return (
@@ -87,59 +124,84 @@ function Home() {
         </div>
       ):(
         <div className={`itens-to-list`}>
-          {
-            playlist.map((res, index) => {
-              return (
-                <List key={index} bg={res.album_cover} onDoubleClick={() => playMusic(res,index)}>
-                  <div 
-                    className={currentMusic && res.id === currentMusic.id?'status-play active': 'status-play'}
-                    onClick={() => playMusic(res, index)}
-                  >
-                    <span>
-                      {currentMusic && res.id === currentMusic.id? 
-                        played?(
-                          <BsPauseCircle size={24} color="#888"/>
-                        ):(
-                          <BsPlayCircle size={24} color="#888"/>
-                        )
-                      :(
-                        <BsPlayCircle size={24} color="#888"/>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {playlist.map((res, index) => (
+                    <Draggable 
+                      
+                      key={'item-'+res.id} 
+                      draggableId={'item-'+res.id} 
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <List 
+                          className="list_track"
+                          key={index} 
+                          bg={res.album_cover} 
+                          onDoubleClick={() => playMusic(res,index)}
+                          ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                        >
+                          <div 
+                            className={currentMusic && res.id === currentMusic.id?'status-play active': 'status-play'}
+                            onClick={() => playMusic(res, index)}
+                          >
+                            <span>
+                              {currentMusic && res.id === currentMusic.id? 
+                                played?(
+                                  <BsPauseCircle size={24} color="#888"/>
+                                ):(
+                                  <BsPlayCircle size={24} color="#888"/>
+                                )
+                              :(
+                                <BsPlayCircle size={24} color="#888"/>
+                              )}
+                            </span>
+                            <span>
+                              {index+1}
+                            </span>
+                          </div>
+                          <div className="cover-album"></div>
+                          <div className="info">
+                            <span className="name-music">{res.title_music}</span>
+                            <span className="name-album">{res.title_album}</span>
+                          </div>
+                          <div className="data">
+                            4 de nov. de 2020
+                          </div>
+                          <div className="status">
+                            <FaRegHeart />
+                          </div>
+                          <div className="time">4:32</div>
+                          <div className="animtaion">
+                            {played && index === musicPlay && (
+                              <svg className="equilizer equilizer-animation" viewBox="0 0 60 60">
+                                <g>
+                                  <title>Audio Equilizer</title>
+                                  <rect className="bar" transform="translate(0,0)" y="0"></rect>
+                                  <rect className="bar" transform="translate(8,0)" y="0"></rect>
+                                  <rect className="bar" transform="translate(16,0)" y="0"></rect>
+                                  <rect className="bar" transform="translate(24,0)" y="0"></rect>
+                                  <rect className="bar" transform="translate(32,0)" y="0"></rect>
+                                </g>
+                              </svg>
+                            )}
+                          </div>
+                        </List>
                       )}
-                    </span>
-                    <span>
-                      {index+1}
-                    </span>
-                  </div>
-                  <div className="cover-album"></div>
-                  <div className="info">
-                    <span className="name-music">{res.title_music}</span>
-                    <span className="name-album">{res.title_album}</span>
-                  </div>
-                  <div className="data">
-                    4 de nov. de 2020
-                  </div>
-                  <div className="status">
-                    <FaRegHeart />
-                  </div>
-                  <div className="time">4:32</div>
-                  <div className="animtaion">
-                    {played && index === musicPlay && (
-                      <svg className="equilizer equilizer-animation" viewBox="0 0 60 60">
-                        <g>
-                          <title>Audio Equilizer</title>
-                          <rect className="bar" transform="translate(0,0)" y="0"></rect>
-                          <rect className="bar" transform="translate(8,0)" y="0"></rect>
-                          <rect className="bar" transform="translate(16,0)" y="0"></rect>
-                          <rect className="bar" transform="translate(24,0)" y="0"></rect>
-                          <rect className="bar" transform="translate(32,0)" y="0"></rect>
-                        </g>
-                      </svg>
-                    )}
-                  </div>
-                </List>
-              )
-            })
-          }
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
       )}
     </Container>

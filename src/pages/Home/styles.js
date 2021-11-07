@@ -219,8 +219,8 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
 
-    > div + div {
-      margin-top: 12px;
+    .list_track + .list_track {
+      margin-top: 12px !important;
     }
   }
 `;
