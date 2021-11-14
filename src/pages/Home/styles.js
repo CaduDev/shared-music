@@ -17,123 +17,82 @@ export const Container = styled.div`
     }
   }
 
-  > .itens-to-grid {
-    display: grid;
-    grid-template-columns: 
-      25% 
-      25% 
-      25%
-      25%;
+  .itens-to-grid {
 
-    > .card {
-      border-radius: 8px;
-      height: 400px;
-      padding: 0 12px;
-      margin-bottom: 12px;
-  
-      > div {
+    > div {
+      display: grid;
+      grid-template-columns: 
+        25% 
+        25% 
+        25%
+        25%;
+        
+      .card {
         border-radius: 8px;
-        width: 100%;
-        height: 100%;
-        box-shadow: 0px 0px 1px -1px rgba(0, 0, 0, 0.2),
-          0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
-        background-size: cover;
-        position: relative;
-        overflow: hidden;
-  
-        &:hover {
-          @-moz-keyframes example1 {
-            0% { -moz-transform: translateX(100%); }
-            100% { -moz-transform: translateX(-100%); }
-          }
-  
-          @-webkit-keyframes example1 {
-            0% { -webkit-transform: translateX(100%); }
-            100% { -webkit-transform: translateX(-100%); }
-          }
-  
-          @keyframes example1 {
-            0% { 
-              -moz-transform: translateX(100%); /* Firefox bug fix */
-              -webkit-transform: translateX(100%); /* Firefox bug fix */
-              transform: translateX(100%);     
-            }
-            100% { 
-              -moz-transform: translateX(-100%); /* Firefox bug fix */
-              -webkit-transform: translateX(-100%); /* Firefox bug fix */
-              transform: translateX(-100%); 
-            }
-          }
-  
-          > p {
-            z-index: 9;
-            color: #ada0dc;
-            transition: .5s;
-            text-shadow: 0px 0px 0px;
-            /* Starting position */
-            -moz-transform:translateX(100%);
-            -webkit-transform:translateX(100%);  
-            transform:translateX(100%);
-            /* Apply animation to this element */  
-            -moz-animation: example1 15s linear infinite;
-            -webkit-animation: example1 15s linear infinite;
-            animation: example1 15s linear infinite;
-            /* Move it (define the animation) */
-            white-space: nowrap;
-            text-overflow: inherit;
-            overflow: inherit;
-          }
-  
-          > span {
-            z-index: 9;
-            color: #555;
-            transition: .5s;
-          }
-        }
-  
-        > p {
-          position: absolute;
-          top: 12px;
-          margin: 0;
-          left: 12px;
-          font-weight: 600;
-          text-transform: uppercase;
-          color: #fff;
-          width: 90%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
-          font-size: 22px;
-          text-shadow: 0px 0px 8px #00000042;
-          transition: .5s;
-        }
-  
-        > span {
-          position: absolute;
-          top: 32px;
-          margin: 0;
-          left: 12px;
-          font-weight: 600;
-          text-transform: uppercase;
-          color: #00000059;
-          width: 90%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;   
-          transition: .5s;  
-        }
-  
-        > .cover_lasted_music {
-          position: absolute;
+        height: 400px;
+        padding: 0 12px;
+        margin-bottom: 12px;
+    
+        > div {
+          border-radius: 8px;
           width: 100%;
           height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: #ffffffcf;
-          opacity: 0;
-          transition: 0.8s;
-  
+          box-shadow: 0px 0px 1px -1px rgba(0, 0, 0, 0.2),
+            0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+          background-size: cover;
+          position: relative;
+          overflow: hidden;
+    
+          &:hover {
+            @-moz-keyframes example1 {
+              0% { -moz-transform: translateX(100%); }
+              100% { -moz-transform: translateX(-100%); }
+            }
+    
+            @-webkit-keyframes example1 {
+              0% { -webkit-transform: translateX(100%); }
+              100% { -webkit-transform: translateX(-100%); }
+            }
+    
+            @keyframes example1 {
+              0% { 
+                -moz-transform: translateX(100%); /* Firefox bug fix */
+                -webkit-transform: translateX(100%); /* Firefox bug fix */
+                transform: translateX(100%);     
+              }
+              100% { 
+                -moz-transform: translateX(-100%); /* Firefox bug fix */
+                -webkit-transform: translateX(-100%); /* Firefox bug fix */
+                transform: translateX(-100%); 
+              }
+            }
+    
+            > p {
+              z-index: 9;
+              color: #ada0dc;
+              transition: .5s;
+              text-shadow: 0px 0px 0px;
+              /* Starting position */
+              -moz-transform:translateX(100%);
+              -webkit-transform:translateX(100%);  
+              transform:translateX(100%);
+              /* Apply animation to this element */  
+              -moz-animation: example1 15s linear infinite;
+              -webkit-animation: example1 15s linear infinite;
+              animation: example1 15s linear infinite;
+              /* Move it (define the animation) */
+              white-space: nowrap;
+              text-overflow: inherit;
+              overflow: inherit;
+            }
+    
+            > span {
+              z-index: 9;
+              color: #555;
+              transition: .5s;
+            }
+          }
+    
           > p {
             position: absolute;
             top: 12px;
@@ -141,74 +100,118 @@ export const Container = styled.div`
             left: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            color: #0000009e;
+            color: #fff;
+            width: 90%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 22px;
+            text-shadow: 0px 0px 8px #00000042;
+            transition: .5s;
           }
-  
-          &:hover {
-            transition: 0.8s;
-            opacity: 1;
-          }
-  
-          > button {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: none;
-            background: transparent;
+    
+          > span {
             position: absolute;
-  
-            &:visited, &:link {
-              text-transform: uppercase;
-              text-decoration: none;
-              display: inline-block;
-              border-radius: 50%;
-              transition: all .2s;
-              width: 150px;
-              height: 150px;
-              background: transparent;
-            }
-  
-            &:active {
-              transform: translateY(-1px);
-            }
-  
-            &:hover {
-              &::after {
-                transform: scaleX(1.4) scaleY(1.4);
-                opacity: 0;
-                background: #8379b9ad;
-              }
-            }
-  
-            &::after {
-              content: "";
-              display: inline-block;
-              height: 100%;
-              width: 100%;
-              border-radius: 100px;
-              position: absolute;
-              top: 0;
-              left: 0;
-              z-index: -1;
-              transition: all .4s;
-            }
-  
-            &::after {
-              background-color: transparent;
-            }
+            top: 32px;
+            margin: 0;
+            left: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #00000059;
+            width: 90%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;   
+            transition: .5s;  
           }
-
-          > .liked {
+    
+          > .cover_lasted_music {
             position: absolute;
-            bottom: 12px;
-            right: 12px;
-            width: 44px;
-            height: 44px;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 50%;
-            border: 3px solid #877eb8;
+            background: #ffffffcf;
+            opacity: 0;
+            transition: 0.8s;
+    
+            > p {
+              position: absolute;
+              top: 12px;
+              margin: 0;
+              left: 12px;
+              font-weight: 600;
+              text-transform: uppercase;
+              color: #0000009e;
+            }
+    
+            &:hover {
+              transition: 0.8s;
+              opacity: 1;
+            }
+    
+            > button {
+              width: 150px;
+              height: 150px;
+              border-radius: 50%;
+              border: none;
+              background: transparent;
+              position: absolute;
+    
+              &:visited, &:link {
+                text-transform: uppercase;
+                text-decoration: none;
+                display: inline-block;
+                border-radius: 50%;
+                transition: all .2s;
+                width: 150px;
+                height: 150px;
+                background: transparent;
+              }
+    
+              &:active {
+                transform: translateY(-1px);
+              }
+    
+              &:hover {
+                &::after {
+                  transform: scaleX(1.4) scaleY(1.4);
+                  opacity: 0;
+                  background: #8379b9ad;
+                }
+              }
+    
+              &::after {
+                content: "";
+                display: inline-block;
+                height: 100%;
+                width: 100%;
+                border-radius: 100px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -1;
+                transition: all .4s;
+              }
+    
+              &::after {
+                background-color: transparent;
+              }
+            }
+  
+            > .liked {
+              position: absolute;
+              bottom: 12px;
+              right: 12px;
+              width: 44px;
+              height: 44px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-radius: 50%;
+              border: 3px solid #877eb8;
+            }
           }
         }
       }
@@ -228,6 +231,7 @@ export const Container = styled.div`
 export const Card = styled.div`
   > div {
     background-image: url(${({ bg }) => bg});
+    background-position: center;
   }
 
     .equilizer-animation {

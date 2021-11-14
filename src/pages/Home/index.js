@@ -27,7 +27,7 @@ const reorder = (list, startIndex, endIndex) => {
 function Home() {
   const dispatch = useDispatch();
   const { playlist, currentMusic } = useSelector(state => state.playing);
-  const [layout, setLayout] = useState('list');
+  const [layout, setLayout] = useState('grid');
   const [musicPlay, seMusicPlay] = useState(null);
   const { played, firstPlay } = useSelector(state => state.controlsSoudBar);
 
@@ -87,40 +87,65 @@ function Home() {
       </div>
       {layout==='grid'? (
         <div className={`itens-to-grid`}>
-          {posts.map((res, index) => {
-            return (
-              <Card className="card" bg={res} key={index}>
-                <div>
-                  <p>Name of music</p>
-                  <span>Name of album</span>
-                  <div className="cover_lasted_music">
-                    <button onClick={() => playMusic(index)}>
-                      {index === musicPlay? (
-                        <BsPauseCircle size={'100%'} color="#8379b947"/>
-                      ): (
-                        <BsPlayCircle size={'100%'} color="#8379b947"/>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="horizontal">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {playlist.map((res, index) => (
+                    <Draggable 
+                      key={'item-'+res.id} 
+                      draggableId={'item-'+res.id} 
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <Card 
+                          className="card" 
+                          bg={res.album_cover} 
+                          key={index}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <div>
+                            <p>{res.title_music}</p>
+                            <span>{res.title_album}</span>
+                            <div className="cover_lasted_music">
+                              <button onClick={() => playMusic(res, index)}>
+                                {index === musicPlay? (
+                                  <BsPauseCircle size={'100%'} color="#8379b947"/>
+                                ): (
+                                  <BsPlayCircle size={'100%'} color="#8379b947"/>
+                                )}
+                              </button>
+                              <button className="liked">
+                                <FaRegHeart size={24} color="#877eb8" />
+                              </button>
+                            </div>
+                            {index === musicPlay && (
+                              <svg className="equilizer equilizer-animation" viewBox="0 0 60 60">
+                                <g>
+                                  <title>Audio Equilizer</title>
+                                  <rect className="bar" transform="translate(0,0)" y="-12" x="14"></rect>
+                                  <rect className="bar" transform="translate(8,0)" y="-12" x="14"></rect>
+                                  <rect className="bar" transform="translate(16,0)" y="-12" x="14"></rect>
+                                  <rect className="bar" transform="translate(24,0)" y="-12" x="14"></rect>
+                                  <rect className="bar" transform="translate(32,0)" y="-12" x="14"></rect>
+                                </g>
+                              </svg>
+                            )}
+                          </div>
+                        </Card> 
                       )}
-                    </button>
-                    <button className="liked">
-                      <FaRegHeart size={24} color="#877eb8" />
-                    </button>
-                  </div>
-                  {index === musicPlay && (
-                    <svg className="equilizer equilizer-animation" viewBox="0 0 60 60">
-                      <g>
-                        <title>Audio Equilizer</title>
-                        <rect className="bar" transform="translate(0,0)" y="-12" x="14"></rect>
-                        <rect className="bar" transform="translate(8,0)" y="-12" x="14"></rect>
-                        <rect className="bar" transform="translate(16,0)" y="-12" x="14"></rect>
-                        <rect className="bar" transform="translate(24,0)" y="-12" x="14"></rect>
-                        <rect className="bar" transform="translate(32,0)" y="-12" x="14"></rect>
-                      </g>
-                    </svg>
-                  )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
                 </div>
-              </Card>
-            )
-          })}
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
       ):(
         <div className={`itens-to-list`}>
