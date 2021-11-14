@@ -114,17 +114,21 @@ function Home() {
                             <span>{res.title_album}</span>
                             <div className="cover_lasted_music">
                               <button onClick={() => playMusic(res, index)}>
-                                {index === musicPlay? (
-                                  <BsPauseCircle size={'100%'} color="#8379b947"/>
-                                ): (
-                                  <BsPlayCircle size={'100%'} color="#8379b947"/>
+                                {currentMusic && res.id === currentMusic.id? 
+                                  played?(
+                                    <BsPauseCircle size={'100%'} color="#888"/>
+                                  ):(
+                                    <BsPlayCircle size={'100%'} color="#888"/>
+                                  )
+                                :(
+                                  <BsPlayCircle size={'100%'} color="#888"/>
                                 )}
                               </button>
                               <button className="liked">
                                 <FaRegHeart size={24} color="#877eb8" />
                               </button>
                             </div>
-                            {index === musicPlay && (
+                            {currentMusic && res.id === currentMusic.id? (
                               <svg className="equilizer equilizer-animation" viewBox="0 0 60 60">
                                 <g>
                                   <title>Audio Equilizer</title>
@@ -135,7 +139,7 @@ function Home() {
                                   <rect className="bar" transform="translate(32,0)" y="-12" x="14"></rect>
                                 </g>
                               </svg>
-                            )}
+                            ): null}
                           </div>
                         </Card> 
                       )}
